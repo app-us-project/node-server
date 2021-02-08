@@ -1,9 +1,8 @@
 const {Router} = require('express');
 const router = Router();
 
-const v1Router = require('./orders');
+const newRouter = require('./new');
 
-router.use('/orders', v1Router);
-
+router.use('/new', newRouter);
 
 module.exports = router;
