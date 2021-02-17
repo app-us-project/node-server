@@ -16,7 +16,7 @@ module.exports = class Product extends Sequelize.Model {
         type: Sequelize.INTEGER.UNSIGNED,
         allowNull: false,
       },
-      image: {
+      imageUrl: {
         type: Sequelize.STRING(200),
         allowNull: true,
       }
