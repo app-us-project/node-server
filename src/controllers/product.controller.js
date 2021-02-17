@@ -6,9 +6,11 @@ const postProduct = async(req, res, next) => {
       title: req.body.title,
       content: req.body.content,
       price: req.body.price,
-      image: req.body.image
+      imageUrl : '/' + req.file.originalname
     });
-    res.status(201).send("Success create user");
+    console.log(req.file);
+    console.log(req.body);
+    res.status(201).send("Success create product");
   } catch (error) {
     console.error(error);
     next(error);
@@ -20,7 +22,7 @@ const deleteProduct = async(req, res, next) => {
     await Product.destroy({
       where: {id : req.params.id},
     });
-    res.status(201).send("Success delete user");
+    res.status(201).send("Success delete product");
   } catch (error) {
     console.error(error);
     next(error);
