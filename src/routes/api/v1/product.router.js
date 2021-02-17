@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const { postProduct, deleteProduct } = require('../../../controllers/product.controller');
-const { upload } = require('../../../service/upload.service');
+const { postProduct, deleteProduct } = require('../../../controllers/product.controller.js');
+const upload = require('../../../modules/multer');
 
-router.route('/').post(upload.single('imgFile'), postProduct); //POST api/product
+router.post('/', upload.single('image'), postProduct); //POST api/product
 router.delete('/:id', deleteProduct); //DELETE api/product/:id
 
 module.exports = router;
