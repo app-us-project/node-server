@@ -41,7 +41,7 @@ module.exports = class OrderItem extends Sequelize.Model{
     }
 
     static associate(db){
-        db.OrderItem.belongsTo(db.Order, {foreignKey : 'orderID', targetKey : 'id'});
+        db.OrderItem.belongsTo(db.Order, {foreignKey : 'orderID', targetKey : 'orderID'});
 
     }
 
