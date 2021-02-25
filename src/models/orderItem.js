@@ -39,11 +39,15 @@ module.exports = class OrderItem extends Sequelize.Model{
             collate : 'utf8_general_ci',
         });
     }
+    static hookFunction(db){
+        db.OrderItem.addHook('afterCreate', async(item, options) =>{
+            const order = await db.Order.findByPk(item.orderID);
+            const entirePrice = order.entirePrice + item.price;
+            await order.update({ entirePrice });
+        })};
 
     static associate(db){
         db.OrderItem.belongsTo(db.Order, {foreignKey : 'orderID', targetKey : 'orderID'});
-
     }
-
 
 }

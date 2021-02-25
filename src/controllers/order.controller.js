@@ -28,8 +28,8 @@ const getOrder = async(req,res,next)=>{     //처음 주문이 들어갔을때 �
 const getAllOrders = async(req,res,next)=>{     //주문 목록이나 주문 내역 확인시에 사용
     const { id } = req.params;
     try{
-        const order = await Order.findPk(id);
-        if(!order) res.stauts(400).json({ message : "wrong order number"});     //만약 조회하려는 주문번호가 없다면 잘못되었음을 출력
+        const order = await Order.findOne({ where : { orderID : id }});
+        if(!order) res.status(400).json({ message : "wrong order number"});     //만약 조회하려는 주문번호가 없다면 잘못되었음을 출력
         const orderItems = await order.getOrderItems();
         const date = order.createdAt;
         res.json({data : date,  items : orderItems});
@@ -42,20 +42,13 @@ const getAllOrders = async(req,res,next)=>{     //주문 목록이나 주문 내
 const getEntirePrice = async(req,res,next) =>{      //최종 결제 금액을 계산
     const { id } = req.params;
     try{
-        const order = await Order.findPk(id);
+        const order = await Order.findByPk(id);
         if(!order) res.status(400).json({message : "wrong order number"});
-        const orderItems = await order.getOrderItems({
-            attributes : ['price'],
-        });
-        let result = 0;;
-        for( let item in orderItems){
-            result += (orderItems[item].dataValues.price); 
-        }
-        let deliveryPrice = 2500;               //배송 비용
-        await order.update({
-            entirePrice : result+(+deliveryPrice),
-        })
-        res.json({ total_price: `${result+ (+deliveryPrice)}`});
+        const result = order.entirePrice; 
+        const deliveryPrice = 2500;               //배송 비용
+        const totalPrice = 2500 + order.entirePrice;
+        await order.update({ deliveryPrice, totalPrice});
+        res.json({ total_price: `${totalPrice}`});
     }catch(e){
         console.error(e);
         next(e);
@@ -64,9 +57,12 @@ const getEntirePrice = async(req,res,next) =>{      //최종 결제 금액을 �
 
 const confirmOrder = async(req,res,next) =>{        //주문 최종 확인 페이지
     try{
-        const order = await Order.findOne({ where : { id : `${req.params.id}`}, attributes:['id', 'createdAt', 'entirePrice'],});
+        const order = await Order.findOne({ where : { orderID : `${req.params.id}`}, attributes:['orderID', 'totalPrice'],});
+        const date = new Date();
+        let string = `${date.getFullYear()}.${date.getMonth()}.${date.getDate()}`;
+        console.log(`string : ${string}`);
         if(!order) res.json({message : "wrong order number"});
-        res.json(order);
+        res.json({order, date : `${string}`});
     }catch(e){
         console.error(e);
         next(e);

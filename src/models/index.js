@@ -27,4 +27,6 @@ OrderItem.init(sequelize);
 Order.associate(db);
 OrderItem.associate(db);
 
+OrderItem.hookFunction(db);
+
 module.exports = db;
