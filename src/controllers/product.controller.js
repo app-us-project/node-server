@@ -1,12 +1,12 @@
 const Product = require('../models/product');
+const Image = require('../models/image');
 
 const postProduct = async(req, res, next) => {
   try {
     await Product.create({
       title: req.body.title,
       content: req.body.content,
-      price: req.body.price,
-      imageUrl : '/' + req.file.originalname
+      price: req.body.price
     });
     res.status(201).send("Success create product");
   } catch (error) {
@@ -29,11 +29,17 @@ const deleteProduct = async(req, res, next) => {
 
 const getAllProduct = async(req, res, next) => {
   try {
-    product = await Product.findAll({ });
+    product = await Product.findAll({
+      include: {
+        model: Image,
+        attributes: ['imageUrl', 'id'],
+        order: [['id', 'ASC']]
+      }
+    });
     if(!product){
       throw Error('no product');
     }
-    res.status(201).send(product);
+    res.status(201).json({data: product});
   } catch (error) {
     console.error(error);
     next(error);
@@ -42,7 +48,13 @@ const getAllProduct = async(req, res, next) => {
 
 const getProduct = async(req, res, next) => {
   try {
-    const product = await Product.findOne({where: {id: req.params.id}});
+    const product = await Product.findOne({
+      where: {title: req.params.title},
+      include: {
+        model: Image,
+        attributes: ['imageUrl', 'id'],
+      },
+    });
     if(!product){
       throw Error('no product');
     }
@@ -61,7 +73,6 @@ const updateProduct = async(req, res, next) => {
       title: body.title,
       content: body.content,
       price: body.price,
-      imageUrl: body.imageUrl
     }, {
       where: {id: productId}
     });
