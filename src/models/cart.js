@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 
-module.exports = class Product extends Sequelize.Model {
+module.exports = class Cart extends Sequelize.Model{
   static init(sequelize){
     return super.init({
       title: {
@@ -8,26 +8,29 @@ module.exports = class Product extends Sequelize.Model {
         allowNull: false,
         unique: true,
       },
-      content: {
-        type: Sequelize.STRING(100),
-        allowNull: false,
-      },
       price: {
         type: Sequelize.INTEGER.UNSIGNED,
         allowNull: false,
+      },
+      totalPrice: {
+        type: Sequelize.INTEGER.UNSIGNED,
+        allowNull: true,
+      },
+      quantity: {
+        type: Sequelize.INTEGER.UNSIGNED,
+        allowNull: true,
       }
     }, {
       sequelize,
       timestamps: false,
-      modelName: 'Product',
-      tableName: 'Products',
+      modelName: 'Cart',
+      tableName: 'Carts',
       charset: 'utf8',
       collate: 'utf8_general_ci',
     });
   }
-  static associate(db) {
-    db.Product.hasMany(db.Image);
-    db.Product.hasMany(db.Cart);
-    db.Product.belongsToMany(db.Category, { through: 'ProductCategory' });
-  }
-};
+  static associate(db){
+    db.Cart.belongsTo(db.Product);
+    db.Cart.belongsTo(db.Image);  
+  } 
+}
