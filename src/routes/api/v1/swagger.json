@@ -1,0 +1,309 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "homeplant swagger api - nodejs ",
+        "version": "v1",
+        "title": "HomePlant API"
+    },
+    "scheme": ["http://13.125.16.233:3000"],
+    "host": "localhost:3000",
+    "basePath": "/api",
+    "paths" : {
+        "/order{?userID}" : {
+            "get" : {
+                "summary" : "주문 하나를 만든다",
+                "description": "처음 주문하기를 눌렀을시에 query를 통해서 userID를 받은 후 주문 테이블을 하나 만듭니다, 그리고 response로는  ms까지 포함된 현재의 시간정보가 주문번호가 전달됩니다",
+                "produces": ["application/json"],
+                "parameters":[ 
+                    {
+                        "name": "userID",
+                        "in": "query",
+                        "description": "현재 로그인된 사용자의 ID ",
+                        "required": true,
+                        "type": "string"
+                    }],
+                "responses": {
+                    "200": {
+                        "description": "key값에 주문번호가 들어갑니다",
+                        "schema": {            
+                            "type": "object",
+                            "properties":{
+                                "key": {
+                                    "type": "integer"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/order/{id}" : {
+            "get" : {
+                "summary" : "주문내역 확인",
+                "description": "주문하기 페이지, 주문내역확인에서 주문번호에 따라서 주문된 상품들을 나열합니다",
+                "produces": ["application/json"],
+                "parameters":[ 
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "주문 번호",
+                        "required": true,
+                        "type": "string"
+                    }],
+                "responses": {
+                    "200": {
+                        "description": "주문내역들이 모두 불러옵니다",
+                        "schema":{
+                            "type": "object",
+                            "$ref": "#/definitions/itemDTO"    
+                            }
+                        }
+                    }
+                }
+            }
+        ,
+        "/order/price/{id}" : {
+            "get" : {
+                "summary" : "최종 결제 금액 확인",
+                "description": "주문하기 페이지에서 최종 결제 금액을 불러올때 사용합니다",
+                "produces": ["application/json"],
+                "parameters": 
+                [{
+                    "name": "id",
+                    "in": "path",
+                    "description": "주문 번호",
+                    "required": true,
+                    "type": "string"
+                }],
+                "responses": {
+                    "200": {
+                        "description": "최종 결제 금액을 불러옵니다 ( 배송비가 포함된 )",
+                        "schema": {
+                            "type": "object",
+                            "properties":{
+                                "total_price":{
+                                    "type":"integer"
+                                }
+                        }
+                    }
+                    }
+                }
+            }
+        },
+        "/order/confirm/{id}" : {
+            "get" : {
+                "summary" : "최종 주문 확인 페이지",
+                "description": "주문이 들어간 후 주문 확인 페이지에서 사용되며 주문번호,시간,결제금액을 보내줍니다",
+                "produces": ["application/json"],
+                "parameters": 
+                [{
+                    "name": "id",
+                    "in": "path",
+                    "description": "주문 번호",
+                    "required": true,
+                    "type": "string"
+                }],
+                "responses": {
+                    "200": {
+                        "description": "주문번호, 시간, 결제금액을 불러옵니다",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/confirmDTO"
+                        }
+                    }
+                    }
+                }
+            },
+            "/orderItem/{id}" : {
+                "get":{
+                    "summary": "상품 정보",
+                    "description": "각각의 상품에 대한 정보를 출력합니다",
+                    "produces": ["application/json"],
+                    "parameters":[{
+                        "name": "id",
+                        "in": "path",
+                        "description": "상품 번호",
+                        "required": true,
+                        "type": "string"
+                    }],
+                    "responses":{
+                        "200":{
+                            "description": "상품에 대한 정보를 출력합니다",
+                            "schema":{
+                                "type": "object",
+                                "$ref":"#/definitions/orderItemDTO"
+                            }
+                        }
+                    }
+                },  
+                "post" : {
+                    "summary" : "상품 주문",
+                    "description": "주문 id에 따라서 주문 테이블에 상품 하나하나를 넣어줍니다",
+                    "produces": ["application/json"],
+                    "parameters": 
+                        [
+                            {
+                            "name": "id",
+                            "in": "path",
+                            "description": "주문 번호",
+                            "required": true,
+                            "type": "string"
+                            },
+                            {
+                            "name": "item",
+                            "in": "body",
+                            "description": "각각의 상품에 대한 정보입니다, count는 같은 상품일 경우 개수를 뜻하고 price는 그 (count*각각의 상품 가격) 입니다 ",
+                            "schema":{
+                                "$ref":"#/definitions/productDTO"
+                            }
+                        }],
+                    "responses": {
+                        "200": {
+                            "description": "성공 메세지와 만들어진 item의 목록을 보내줍니다",
+                            "schema": {
+                                "type": "object",
+                                "properties":{
+                                    "state":{
+                                        "type":"string"
+                                    },
+                                    "item":{
+                                        "type":"object",
+                                        "$ref":"#/definitions/orderItemDTO"
+                                    }
+                                }
+                            }
+                        }
+                        }
+                    }
+                },
+                "/orderItem/cancel/{id}" : {
+                    "get" : {
+                        "summary" : "상품 취소",
+                        "description": "상품이 결제된 이후에 취소할 경우에 사용하며 상품의 상태 state값을 false로 하며 상품을 제외한 나머지 값들이 반환됩니다",
+                        "produces": ["application/json"],
+                        "parameters": 
+                        [{
+                            "name": "id",
+                            "in": "path",
+                            "description": "상품 번호",
+                            "required": true,
+                            "type": "string"
+                        }],
+                        "responses": {
+                            "200": {
+                                "description": "취소할 상품을 제외한 상품들의 total 값을 반환합니다 ",
+                                "schema": {
+                                    "type": "object",
+                                    "properties":{
+                                        "message":{
+                                            "type":"string"
+                                        },
+                                        "changedTotalPrice":{
+                                            "type":"integer"                                            
+                                        }
+                                    }
+                                }
+                            }
+                            }
+                        }
+                    }
+    },
+    "definitions": {
+        "itemDTO": {
+            "type": "object",
+            "properties":{
+                "date":{
+                    "type":"string"
+                },
+                "items":{
+                    "type": "array",
+                    "items":{
+                        "type": "object",
+                        "properties": {
+                            "productName": {
+                                "type": "string"
+                            },
+                            "productImage": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "boolean"
+                            },
+                            "count": {
+                                "type": "integer"
+                            },
+                            "price":{
+                                "type": "integer"
+                            }
+                    }
+                }
+                }   
+            }
+        },
+        "confirmDTO": {
+            "type": "object",
+            "properties":{
+                "order":{
+                    "type":"object",
+                    "properties":{
+                        "orderID": {
+                            "type": "integer"
+                        }, 
+                        "totalPrice":{
+                            "type": "integer"
+                        }
+                    }
+                },
+                "date":{
+                    "type":"string"
+                }
+            }
+        },
+        "orderItemDTO":{
+            "type":"object",
+            "properties":{
+                "productName":{
+                    "type":"string"
+                },
+                "productImage":{
+                    "type":"string"
+                },
+                "state":{
+                    "type":"boolean"
+                },
+                "count":{
+                    "type":"integer"
+                },
+                "price":{
+                    "type":"integer"
+                },
+                "orderID":{
+                    "type":"integer"
+                },
+                "createdAt":{
+                    "type":"string"
+                },
+                "updatedAt":{
+                    "type":"string"
+                }
+            }        },
+        "productDTO": {
+            "type": "object",
+            "properties":{
+                "productName":{
+                    "type":"string"
+                },
+                "productImage":{
+                    "type":"string"
+                },
+                "count":{
+                    "type":"integer"
+                },
+                "price":{
+                    "type":"integer"
+                }
+            }
+        }
+        }
+    }
+
