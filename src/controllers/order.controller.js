@@ -6,7 +6,7 @@ const getOrder = async(req,res,next)=>{     //처음 주문이 들어갔을때 �
         const date = new Date();
         const array = [];
         array.push(date.getFullYear());
-        array.push(date.getMonth());
+        array.push(date.getMonth()+1);
         array.push(date.getDate());
         array.push(date.getHours());
         array.push(date.getMinutes());
@@ -59,7 +59,7 @@ const confirmOrder = async(req,res,next) =>{        //주문 최종 확인 페�
     try{
         const order = await Order.findOne({ where : { orderID : `${req.params.id}`}, attributes:['orderID', 'totalPrice'],});
         const date = new Date();
-        let string = `${date.getFullYear()}.${date.getMonth()}.${date.getDate()}`;
+        let string = `${date.getFullYear()}.${date.getMonth()+1}.${date.getDate()}`;
         console.log(`string : ${string}`);
         if(!order) res.json({message : "wrong order number"});
         res.json({order, date : `${string}`});
