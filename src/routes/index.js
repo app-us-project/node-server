@@ -2,7 +2,8 @@ const express = require('express');
 const router = express.Router();
 const { swaggerUi, specs } = require('../lib/swagger');
 const apiRouter = require('./api/v1');
-router.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
+const swaggerDocument = require('./api/v1/swagger.json');       
+router.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument, specs));  
 
 router.get('/', (req,res) =>{
     res.send('ok');
