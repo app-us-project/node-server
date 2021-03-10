@@ -1,5 +1,4 @@
 const Sequelize = require('sequelize');
-const { addHook } = require('./orderItem');
 
 module.exports = class OrderItem extends Sequelize.Model{
 
