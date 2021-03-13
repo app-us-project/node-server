@@ -9,6 +9,7 @@ const Product = require('./product');
 const Image = require('./image');
 const Cart = require('./cart');
 const Category = require('./category');
+const wishList = require('./wishList');
 
 const sequelize = new Sequelize(
   config.database, 
@@ -23,15 +24,18 @@ db.Product = Product;
 db.Image = Image;
 db.Cart = Cart;
 db.Category = Category;
+db.wishList = wishList;
 
 Product.init(sequelize);
 Image.init(sequelize);
 Cart.init(sequelize);
 Category.init(sequelize);
+wishList.init(sequelize);
 
 Product.associate(db);
 Image.associate(db);
 Cart.associate(db);
 Category.associate(db);
+wishList.associate(db);
 
 module.exports = db;

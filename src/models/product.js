@@ -28,6 +28,7 @@ module.exports = class Product extends Sequelize.Model {
   static associate(db) {
     db.Product.hasMany(db.Image);
     db.Product.hasMany(db.Cart);
+    db.Product.hasMany(db.wishList);
     db.Product.belongsToMany(db.Category, { through: 'ProductCategory' });
   }
 };
