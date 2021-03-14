@@ -9,9 +9,11 @@ router.use('/orderItem', orderItemRouter);
 const productRouter = require('./product.router');
 const imageRouter = require('./image.router');
 const wishListRouter = require('./wishList.router');
+const cartRouter = require('./cart.router');
 
 router.use('/product', productRouter);
 router.use('/product', imageRouter);
+router.use('/cart', cartRouter);
 router.use('/', wishListRouter);
 
 module.exports = router;
