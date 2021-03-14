@@ -8,6 +8,10 @@ module.exports = class Cart extends Sequelize.Model{
         allowNull: false,
         unique: true,
       },
+      userID:{
+        type:Sequelize.STRING(20),
+        allowNull:false
+      },
       price: {
         type: Sequelize.INTEGER.UNSIGNED,
         allowNull: false,
