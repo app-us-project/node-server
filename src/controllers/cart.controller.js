@@ -35,7 +35,16 @@ const getAllCarts = async(req, res, next) => {
       throw Error('auth failed');
     }
     const cart = await Cart.findAll({
-      where: {userId: auth}
+      where: {userId: auth},
+      attributes: [
+        'id', 
+        'title', 
+        'price', 
+        'totalPrice', 
+        'quantity',
+        'ProductId',
+        'ImageId' 
+      ]
     })
     Cart.sum('totalPrice').then(sum => {
       res.json({data: cart, "allTotalPrice": sum}); 
