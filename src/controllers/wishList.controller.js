@@ -44,4 +44,28 @@ const getAllWishList = async(req, res, next) => {
   }
 }
 
-module.exports = {addWishList, getAllWishList};
+const deleteWishList = async(req, res, next) => {
+  try {
+    const wishListId = req.params.wishListId;
+    const auth = req.headers.authentication;
+    await WishList.destroy({
+      where: {
+        id: wishListId,
+        userId: auth
+      }
+    })
+    const wishList = await WishList.findAll({
+      attributes: ['id', 'userId', 'ImageId'],
+      include: [{
+        model: Product,
+        attributes: ['id', 'title', 'price']
+      }]
+    });
+    res.json({data: wishList});
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+}
+
+module.exports = {addWishList, getAllWishList, deleteWishList};
