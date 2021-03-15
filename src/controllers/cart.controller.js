@@ -12,7 +12,7 @@ const addCart = async(req, res, next) => {
       where: {ProductId: productId},
     })
     let priceTemp = quantity * product.price;
-    const cart = await Cart.create({
+    await Cart.create({
       title : product.title,
       userId: auth,
       price : product.price,
@@ -20,6 +20,18 @@ const addCart = async(req, res, next) => {
       quantity: quantity,
       ProductId: productId,
       ImageId: image.id 
+  });
+  const cart = await Cart.findOne({
+    where: {userId: auth, ProductId: productId},
+    attributes: [
+      'id', 
+      'title', 
+      'price', 
+      'totalPrice', 
+      'quantity',
+      'ProductId',
+      'ImageId' 
+    ]
   });
   res.json({data: cart});
   } catch (error) {
