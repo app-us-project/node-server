@@ -28,4 +28,20 @@ const addCart = async(req, res, next) => {
   }
 } 
 
-module.exports = {addCart};
+const getAllCarts = async(req, res, next) => {
+  try {
+    const auth = req.headers.authentication;
+    if(!auth){
+      throw Error('auth failed');
+    }
+    const cart = await Cart.findAll({
+      where: {userId: auth}
+    })
+    res.json({data: cart, "allTotalPrice": allTotalPrice});    
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+}
+
+module.exports = {addCart, getAllCarts};
