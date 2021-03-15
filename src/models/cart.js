@@ -8,6 +8,10 @@ module.exports = class Cart extends Sequelize.Model{
         allowNull: false,
         unique: true,
       },
+      userId: {
+        type: Sequelize.STRING(20),
+        allowNull: false,
+      },
       price: {
         type: Sequelize.INTEGER.UNSIGNED,
         allowNull: false,
@@ -22,7 +26,7 @@ module.exports = class Cart extends Sequelize.Model{
       }
     }, {
       sequelize,
-      timestamps: false,
+      timestamps: true,
       modelName: 'Cart',
       tableName: 'Carts',
       charset: 'utf8',
@@ -31,6 +35,5 @@ module.exports = class Cart extends Sequelize.Model{
   }
   static associate(db){
     db.Cart.belongsTo(db.Product);
-    db.Cart.belongsTo(db.Image);  
   } 
 }

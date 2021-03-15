@@ -18,6 +18,7 @@ module.exports = class Image extends Sequelize.Model{
   }
   static associate(db) {
     db.Image.belongsTo(db.Product);
-    db.Image.hasMany(db.Cart);
+    db.Image.hasOne(db.Cart);
+    db.Image.hasOne(db.wishList);
   }
 };
