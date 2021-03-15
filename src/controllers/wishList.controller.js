@@ -1,3 +1,4 @@
+const Product = require('../models/product');
 const WishList = require('../models/wishList');
 const Image = require("../models/image");
 
@@ -23,4 +24,24 @@ const addWishList = async(req, res, next) => {
   }
 }
 
-module.exports = {addWishList};
+const getAllWishList = async(req, res, next) => {
+  try {
+    const wishList = await WishList.findAll({
+      where: {userId: req.headers.authentication},
+      attributes: ['id', 'ImageId'],
+      include: [{
+        model: Product, 
+        attributes: ['id', 'title', 'price']
+      }], 
+    });
+    if(!wishList){
+      throw Error("상품이 없습니다");
+    }
+    res.json({data: wishList});
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+}
+
+module.exports = {addWishList, getAllWishList};
