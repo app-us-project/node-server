@@ -44,4 +44,31 @@ const getAllCarts = async(req, res, next) => {
   }
 }
 
-module.exports = {addCart, getAllCarts};
+const deleteCart = async(req, res, next) => {
+  try {
+    const cartId = req.params.cartId;
+    const auth = req.headers.authentication;
+    if(!cartId){
+      throw Error('no cartId');
+    }
+    await Cart.destroy({
+      where: {
+        id: cartId,
+        userId: auth
+      }
+    });
+    const cart = await Cart.findAll({
+      attributes: ['id', 'userId', 'totalPrice', 'quantity', 'ImageId'],
+      include: [{
+        model: Product,
+        attributes: ['id', 'title', 'price']
+      }]
+    })
+    res.json({data: cart});
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+}
+
+module.exports = {addCart, getAllCarts, deleteCart};
