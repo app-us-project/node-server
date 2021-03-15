@@ -1,6 +1,7 @@
 const Product = require('../models/product');
 const Image = require('../models/image');
 const Cart = require('../models/cart');
+const { sequelize } = require('../models/product');
 
 const addCart = async(req, res, next) => {
   try {
@@ -37,7 +38,9 @@ const getAllCarts = async(req, res, next) => {
     const cart = await Cart.findAll({
       where: {userId: auth}
     })
-    res.json({data: cart, "allTotalPrice": allTotalPrice});    
+    Cart.sum('totalPrice').then(sum => {
+      res.json({data: cart, "allTotalPrice": sum}); 
+    });
   } catch (error) {
     console.error(error);
     next(error);
