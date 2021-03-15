@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const { getAllCarts, addCart, getPrice, deleteCart,} = require('../../../controllers/cart.controller.js');
+const { getAllCarts, addCart, deleteCart,} = require('../../../controllers/cart.controller.js');
 
-router.post('/:productId/cart', addCart);
+router.post('/:productId/cart', addCart);     
 router.get('/cart', getAllCarts);
 router.delete('/cart/:cartId', deleteCart);
 
