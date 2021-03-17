@@ -59,7 +59,7 @@ const getAllCarts = async(req, res, next) => {
         'ImageId' 
       ]
     })
-    Cart.sum('totalPrice').then(sum => {
+    Cart.sum('totalPrice', {where: {userId: auth}}).then(sum => {
       res.json({data: cart, "allTotalPrice": sum}); 
     });
   } catch (error) {
