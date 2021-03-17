@@ -37,4 +37,4 @@ const test = {
   port: env.MYSQL_PORT
 };
 
-module.exports = { development, production, test, local };
+module.exports = { local, development, production, test };
