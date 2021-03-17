@@ -24,7 +24,6 @@ const sequelize = new Sequelize(
 
 db.sequelize = sequelize;
 
-
 db.Product = Product;
 db.Image = Image;
 db.Cart = Cart;
