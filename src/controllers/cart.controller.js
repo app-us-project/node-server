@@ -1,11 +1,12 @@
 const Product = require('../models/product');
 const Image = require('../models/image');
 const Cart = require('../models/cart');
+const verifyToken = require('../middleware/verify.middleware');
 
 const addCart = async(req, res, next) => {
   try {
     const productId = req.params.productId;
-    const auth = req.headers.authentication;
+    const auth = req.auth.id;
     const quantity = req.body.quantity;
     const product = await Product.findByPk(productId);
     const image = await Image.findOne({
@@ -42,7 +43,7 @@ const addCart = async(req, res, next) => {
 
 const getAllCarts = async(req, res, next) => {
   try {
-    const auth = req.headers.authentication;
+    let auth = req.auth.id;
     if(!auth){
       throw Error('auth failed');
     }
@@ -70,7 +71,7 @@ const getAllCarts = async(req, res, next) => {
 const deleteCart = async(req, res, next) => {
   try {
     const cartId = req.params.cartId;
-    const auth = req.headers.authentication;
+    const auth = req.auth.id;
     if(!cartId){
       throw Error('no cartId');
     }

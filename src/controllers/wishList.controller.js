@@ -3,7 +3,7 @@ const WishList = require('../models/wishList');
 const Image = require("../models/image");
 
 const addWishList = async(req, res, next) => {
-  const userId = req.headers.authentication;
+  const auth = req.auth.id;
   const productId = req.params.productId;
   const {title, price} = req.body;
   try {
@@ -14,7 +14,7 @@ const addWishList = async(req, res, next) => {
       title: title,
       price: price,
       ProductId: productId,
-      userId: userId,
+      userId: auth,
       ImageId: image.id
     });
     res.json({data: wishList});
@@ -26,8 +26,9 @@ const addWishList = async(req, res, next) => {
 
 const getAllWishList = async(req, res, next) => {
   try {
+    const auth = req.auth.id;
     const wishList = await WishList.findAll({
-      where: {userId: req.headers.authentication},
+      where: {userId: auth},
       attributes: ['id', 'ImageId'],
       include: [{
         model: Product, 
@@ -47,7 +48,7 @@ const getAllWishList = async(req, res, next) => {
 const deleteWishList = async(req, res, next) => {
   try {
     const wishListId = req.params.wishListId;
-    const auth = req.headers.authentication;
+    const auth = req.auth.id;
     await WishList.destroy({
       where: {
         id: wishListId,
