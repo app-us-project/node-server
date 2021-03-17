@@ -1,7 +1,6 @@
 const Product = require('../models/product');
 const Image = require('../models/image');
 const Cart = require('../models/cart');
-const verifyToken = require('../middleware/verify.middleware');
 
 const addCart = async(req, res, next) => {
   try {
