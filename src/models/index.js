@@ -9,6 +9,12 @@ const OrderItem = require('./orderItem');
 
 const db = {};
 
+const Product = require('./product');
+const Image = require('./image');
+const Cart = require('./cart');
+const Category = require('./category');
+const wishList = require('./wishList');
+
 const sequelize = new Sequelize(
   config.database, 
   config.username, 
@@ -17,6 +23,25 @@ const sequelize = new Sequelize(
 );
 
 db.sequelize = sequelize;
+
+
+db.Product = Product;
+db.Image = Image;
+db.Cart = Cart;
+db.Category = Category;
+db.wishList = wishList;
+
+Product.init(sequelize);
+Image.init(sequelize);
+Cart.init(sequelize);
+Category.init(sequelize);
+wishList.init(sequelize);
+
+Product.associate(db);
+Image.associate(db);
+Cart.associate(db);
+Category.associate(db);
+wishList.associate(db);
 
 db.Order = Order;
 db.OrderItem = OrderItem;
@@ -28,5 +53,6 @@ Order.associate(db);
 OrderItem.associate(db);
 
 OrderItem.hookFunction(db);
+
 
 module.exports = db;
