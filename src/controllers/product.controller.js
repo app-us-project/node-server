@@ -5,7 +5,6 @@ const postProduct = async(req, res, next) => {
   try {
     await Product.create({
       title: req.body.title,
-      content: req.body.content,
       price: req.body.price
     });
     res.status(201).send("Success create product");
@@ -71,7 +70,6 @@ const updateProduct = async(req, res, next) => {
     const productId = req.params.id;
     await Product.update({
       title: body.title,
-      content: body.content,
       price: body.price,
     }, {
       where: {id: productId}

@@ -8,10 +8,6 @@ module.exports = class Product extends Sequelize.Model {
         allowNull: false,
         unique: true,
       },
-      content: {
-        type: Sequelize.STRING(100),
-        allowNull: false,
-      },
       price: {
         type: Sequelize.INTEGER.UNSIGNED,
         allowNull: false,
