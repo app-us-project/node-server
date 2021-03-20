@@ -15,7 +15,7 @@ const verifyToken = async(req, res, next) =>{
     req.auth = {
       id: decoded.jti
     }
-    return next();
+    next();
     })
   }catch(error){
     res.status(401).json({message: "key experience error"});
