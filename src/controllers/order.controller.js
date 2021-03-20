@@ -1,7 +1,7 @@
-const { Order } = require("../models");
+const { Order, OrderItem } = require("../models");
 
 const getOrder = async(req,res,next)=>{     //처음 주문이 들어갔을때 주문 key값을 반환
-    const {userID} = req.query;
+    const {id : userID} = req.auth;
     try{
         const date = new Date();
         const array = [];
@@ -26,13 +26,16 @@ const getOrder = async(req,res,next)=>{     //처음 주문이 들어갔을때 �
 }
 
 const getAllOrders = async(req,res,next)=>{     //주문 목록이나 주문 내역 확인시에 사용
-    const { id } = req.params;
+    const {id : userID} = req.auth;
     try{
-        const order = await Order.findOne({ where : { orderID : id }});
-        if(!order) res.status(400).json({ message : "wrong order number"});     //만약 조회하려는 주문번호가 없다면 잘못되었음을 출력
-        const orderItems = await order.getOrderItems();
-        const date = order.createdAt;
-        res.json({data : date,  items : orderItems});
+        const object = {};
+        let orders = await Order.findAll({ where : { userID }});
+        for( let order in orders){
+            const temp = orders[order].orderID;
+            const items = await OrderItem.findAll({where : {orderID : temp}})
+            object[`${temp}`]= items;
+        }
+        return res.json(object);
     }catch(e){
         console.error(e);
         next(e);

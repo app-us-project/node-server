@@ -9,12 +9,13 @@ const verifyToken = async(req, res, next) =>{
     jwt.verify(authentication, process.env.JWT_SECRETKEY, (error, decoded) => {
       if(error){
         res.status(401).json({message: "Unauthorization"});
+        return;
       }
     console.log(decoded.jti);
     req.auth = {
       id: decoded.jti
     }
-    next();
+    return next();
     })
   }catch(error){
     res.status(401).json({message: "key experience error"});
