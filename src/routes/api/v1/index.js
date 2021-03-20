@@ -13,7 +13,7 @@ router.use('/', verifyToken, cartRouter);
 router.use('/', verifyToken, wishListRouter);
 router.use('/product', productRouter);
 router.use('/product', imageRouter);
-router.use('/order', orderRouter);
-router.use('/orderItem', orderItemRouter);
+router.use('/order', verifyToken, orderRouter);
+router.use('/orderItem', verifyToken, orderItemRouter);
 
 module.exports = router;
